@@ -79,12 +79,13 @@
   .join { margin-top: 0; padding: 22px 18px 20px; background: var(--panel); border: 1px solid var(--line); border-left: 6px solid var(--lime); border-radius: 6px; }
   .join h2 { font-family: "Saira Stencil One", Impact, sans-serif; font-weight: 400; font-size: 1.5rem; margin: 0 0 14px; }
   label.field { display: block; font-weight: 600; margin-bottom: 6px; }
-  input[type="email"] {
+  input[type="email"], input.txt {
     width: 100%; padding: 14px 14px; font: inherit; font-size: 1rem;
     color: var(--bone); background: var(--ink);
     border: 2px solid var(--line); border-radius: 6px;
   }
-  input[type="email"]:focus { border-color: var(--lime); outline: none; box-shadow: 0 0 0 3px rgba(184, 238, 11, 0.25); }
+  input[type="email"]:focus, input.txt:focus { border-color: var(--lime); outline: none; box-shadow: 0 0 0 3px rgba(184, 238, 11, 0.25); }
+  .opt { color: var(--mute); font-weight: 400; }
   .hint { color: var(--mute); font-size: 0.95rem; margin: 6px 0 16px; }
   .consent { display: flex; gap: 12px; align-items: flex-start; margin: 0 0 18px; font-size: 0.97rem; }
   .consent input { width: 22px; height: 22px; margin: 2px 0 0; accent-color: var(--lime); flex: none; }
@@ -147,13 +148,17 @@
           <input id="email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="vos@gmail.com" required />
           <p class="hint">Tiene que ser el email con el que entrás a Google Play en tu celular.</p>
 
+          <label class="field" for="name">Nombre o alias para los agradecimientos <span class="opt">(opcional)</span></label>
+          <input id="name" class="txt" name="name" type="text" maxlength="40" autocomplete="nickname" placeholder="Cómo querés aparecer" />
+          <p class="hint">Si lo completás, te nombro en los agradecimientos cuando el juego salga. Si lo dejás vacío, no aparecés.</p>
+
           <div class="trap" aria-hidden="true">
             <label>No completar <input type="text" id="web" name="web" tabindex="-1" autocomplete="off" /></label>
           </div>
 
           <label class="consent" for="consent">
             <input id="consent" name="consent" type="checkbox" required />
-            <span>Acepto que usen mi email solo para invitarme a probar Color Shift. Lo borro cuando quiera, según la <a href="privacy.html">política de privacidad</a>.</span>
+            <span>Acepto que usen mi email solo para invitarme a probar Color Shift y, si lo completé, mi nombre en los agradecimientos. Lo borro cuando quiera, según la <a href="privacy.html">política de privacidad</a>.</span>
           </label>
 
           <button class="send" id="send" type="submit">Quiero probar Color Shift</button>
@@ -183,6 +188,7 @@
   var SUPABASE_KEY = 'sb_publishable_2dR0k_j0zTh7mPqYUvQFPA_lQfnEpIK';
   var form = document.getElementById('form');
   var email = document.getElementById('email');
+  var nameInput = document.getElementById('name');
   var consent = document.getElementById('consent');
   var trap = document.getElementById('web');
   var send = document.getElementById('send');
@@ -201,6 +207,10 @@
     if (!EMAIL_OK.test(value)) { say('Revisá el email: parece que falta algo.', 'bad'); email.focus(); return; }
     if (!consent.checked) { say('Tildá la casilla para que podamos usar tu email.', 'bad'); consent.focus(); return; }
 
+    var payload = { email: value, consent: true };
+    var shown = nameInput.value.trim();
+    if (shown) payload.display_name = shown.slice(0, 40);
+
     send.disabled = true;
     say('Enviando…');
     fetch(SUPABASE_URL + '/rest/v1/tester_signups', {
@@ -210,7 +220,7 @@
         'Content-Type': 'application/json',
         'Prefer': 'return=minimal'
       },
-      body: JSON.stringify({ email: value, consent: true })
+      body: JSON.stringify(payload)
     }).then(function (res) {
       if (res.ok) {
         form.reset();
