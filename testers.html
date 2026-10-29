@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Probá Color Shift · Xuxinio Games</title>
+<meta name="description" content="Sumate como tester de Color Shift, el puzzle de deslizar filas y columnas para Android, antes de que salga en Google Play." />
+<meta name="theme-color" content="#080a06" />
+<link rel="icon" type="image/png" href="assets/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Saira+Stencil+One&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #080a06;
+    --panel: #12160d;
+    --line: #2a3320;
+    --lime: #b8ee0b;
+    --bone: #ebe7d8;
+    --mute: #9aa088;
+    --err: #ff8a7a;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--bone);
+    font: 400 1.0625rem/1.6 "Barlow", system-ui, sans-serif;
+  }
+  a { color: var(--lime); text-underline-offset: 3px; }
+  :focus-visible { outline: 3px solid var(--lime); outline-offset: 3px; }
+
+  .page { max-width: 1120px; margin: 0 auto; padding: 20px 16px 56px; }
+
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand img { width: 44px; height: 44px; border-radius: 10px; display: block; }
+  .brand span { font-family: "Saira Stencil One", Impact, sans-serif; font-size: 1.15rem; letter-spacing: 0.04em; }
+
+  .layout { display: grid; gap: 28px; margin-top: 36px; }
+  .intro { grid-area: intro; }
+  .stage { grid-area: stage; }
+  .rest { grid-area: rest; }
+  .layout { grid-template-areas: "intro" "stage" "rest"; }
+
+  h1 {
+    font-family: "Saira Stencil One", Impact, sans-serif;
+    font-weight: 400;
+    font-size: clamp(2.3rem, 9vw, 4.2rem);
+    line-height: 1.02;
+    letter-spacing: 0.01em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+  .lead { margin: 0 0 8px; max-width: 34em; font-size: 1.15rem; }
+  .note { margin: 0; color: var(--mute); max-width: 34em; }
+
+  /* The memorable element: two real screens on a torn lime stripe */
+  .stage { position: relative; display: flex; justify-content: center; align-items: center; padding: 28px 0; min-height: 360px; }
+  .stage::before {
+    content: "";
+    position: absolute; inset: 12% -8px 12% -8px;
+    background: var(--lime);
+    clip-path: polygon(2% 14%, 9% 4%, 17% 12%, 28% 1%, 40% 11%, 53% 0, 66% 9%, 79% 2%, 91% 10%, 99% 3%, 96% 22%, 100% 38%, 95% 53%, 99% 69%, 96% 84%, 98% 96%, 88% 88%, 77% 99%, 64% 90%, 51% 100%, 38% 91%, 25% 99%, 13% 89%, 4% 97%, 1% 82%, 5% 67%, 0 52%, 4% 36%, 0 24%);
+  }
+  .phone {
+    position: relative;
+    width: min(44vw, 230px);
+    border-radius: 22px;
+    border: 3px solid #000;
+    background: #000;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+    display: block;
+  }
+  .phone img { display: block; width: 100%; height: auto; border-radius: 19px; }
+  .phone.a { transform: rotate(-4deg) translateX(8px); z-index: 1; }
+  .phone.b { transform: rotate(3deg) translate(-8px, 22px); }
+
+  .join { margin-top: 0; padding: 22px 18px 20px; background: var(--panel); border: 1px solid var(--line); border-left: 6px solid var(--lime); border-radius: 6px; }
+  .join h2 { font-family: "Saira Stencil One", Impact, sans-serif; font-weight: 400; font-size: 1.5rem; margin: 0 0 14px; }
+  label.field { display: block; font-weight: 600; margin-bottom: 6px; }
+  input[type="email"] {
+    width: 100%; padding: 14px 14px; font: inherit; font-size: 1rem;
+    color: var(--bone); background: var(--ink);
+    border: 2px solid var(--line); border-radius: 6px;
+  }
+  input[type="email"]:focus { border-color: var(--lime); outline: none; box-shadow: 0 0 0 3px rgba(184, 238, 11, 0.25); }
+  .hint { color: var(--mute); font-size: 0.95rem; margin: 6px 0 16px; }
+  .consent { display: flex; gap: 12px; align-items: flex-start; margin: 0 0 18px; font-size: 0.97rem; }
+  .consent input { width: 22px; height: 22px; margin: 2px 0 0; accent-color: var(--lime); flex: none; }
+  button.send {
+    width: 100%; padding: 15px 18px; border: 0; border-radius: 6px; cursor: pointer;
+    font-family: "Saira Stencil One", Impact, sans-serif; font-size: 1.15rem; letter-spacing: 0.03em;
+    color: #0c1204; background: var(--lime);
+  }
+  button.send:hover { background: #cdff2a; }
+  button.send:active { transform: translateY(1px); }
+  button.send[disabled] { opacity: 0.6; cursor: progress; }
+  .trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .status { margin: 14px 0 0; min-height: 1.6em; font-weight: 500; }
+  .status.ok { color: var(--lime); }
+  .status.bad { color: var(--err); }
+
+  .steps { margin: 36px 0 0; padding: 0; list-style: none; display: grid; gap: 18px; }
+  .steps li { display: grid; grid-template-columns: 2.4rem 1fr; gap: 12px; align-items: start; }
+  .steps .n { font-family: "Saira Stencil One", Impact, sans-serif; font-size: 2rem; line-height: 1; color: var(--lime); }
+  .steps strong { display: block; font-weight: 600; }
+  .steps span { color: var(--mute); }
+
+  footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--mute); font-size: 0.95rem; display: flex; flex-wrap: wrap; gap: 8px 22px; }
+
+  @media (min-width: 900px) {
+    .page { padding: 32px 32px 72px; }
+    .layout { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); grid-template-areas: "intro stage" "rest stage"; grid-template-rows: auto 1fr; column-gap: 56px; row-gap: 28px; align-items: start; margin-top: 56px; }
+    .stage { position: sticky; top: 32px; min-height: 640px; padding: 0; }
+    .stage::before { inset: 10% -24px; }
+    .phone { width: min(21vw, 270px); }
+    .phone.a { transform: rotate(-5deg) translateX(14px); }
+    .phone.b { transform: rotate(4deg) translate(-14px, 40px); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="brand">
+    <img src="assets/xuxinio-games-icon-192.png" alt="" width="44" height="44" />
+    <span>Xuxinio Games</span>
+  </header>
+
+  <main class="layout">
+    <div class="intro">
+      <h1>Probá Color Shift antes de que salga</h1>
+      <p class="lead">Es un puzzle para Android: deslizás filas y columnas hasta juntar los colores en bloques. Suena cada nota que tocás.</p>
+      <p class="note">Estoy armando un grupo de testers para probarlo en Google Play antes de publicarlo. Si jugás un rato y me contás qué te pareció, ya ayudás un montón.</p>
+    </div>
+
+    <aside class="stage" aria-label="Capturas de Color Shift">
+      <div class="phone a"><img src="assets/color-shift-title.webp" width="585" height="1266" alt="Pantalla de inicio de Color Shift con el desafío diario y la partida libre" /></div>
+      <div class="phone b"><img src="assets/color-shift-play.webp" width="585" height="1266" alt="Tablero de Color Shift de 6 por 6 con fichas de colores y notas musicales" /></div>
+    </aside>
+
+    <div class="rest">
+      <section class="join" aria-labelledby="join-title">
+        <h2 id="join-title">Anotate como tester</h2>
+        <form id="form" novalidate>
+          <label class="field" for="email">Email de tu cuenta de Google</label>
+          <input id="email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="vos@gmail.com" required />
+          <p class="hint">Tiene que ser el email con el que entrás a Google Play en tu celular.</p>
+
+          <div class="trap" aria-hidden="true">
+            <label>No completar <input type="text" id="web" name="web" tabindex="-1" autocomplete="off" /></label>
+          </div>
+
+          <label class="consent" for="consent">
+            <input id="consent" name="consent" type="checkbox" required />
+            <span>Acepto que usen mi email solo para invitarme a probar Color Shift. Lo borro cuando quiera, según la <a href="privacy.html">política de privacidad</a>.</span>
+          </label>
+
+          <button class="send" id="send" type="submit">Quiero probar Color Shift</button>
+          <p class="status" id="status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <ol class="steps" aria-label="Cómo funciona">
+        <li><div class="n" aria-hidden="true">1</div><div><strong>Dejás tu email</strong><span>Acá arriba, con tu cuenta de Google.</span></div></li>
+        <li><div class="n" aria-hidden="true">2</div><div><strong>Te escribo con el enlace</strong><span>Cuando la prueba esté abierta, te llega la invitación de Google Play.</span></div></li>
+        <li><div class="n" aria-hidden="true">3</div><div><strong>Instalás y jugás</strong><span>Algunos días, unos minutos por vez. No te salgas de la prueba hasta que termine.</span></div></li>
+      </ol>
+    </div>
+  </main>
+
+  <footer>
+    <span>Xuxinio Games</span>
+    <a href="privacy.html">Política de privacidad</a>
+    <a href="mailto:xuxinio@hotmail.com">xuxinio@hotmail.com</a>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var SUPABASE_URL = 'https://dnwovxsokigxqtodkjxe.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_2dR0k_j0zTh7mPqYUvQFPA_lQfnEpIK';
+  var form = document.getElementById('form');
+  var email = document.getElementById('email');
+  var consent = document.getElementById('consent');
+  var trap = document.getElementById('web');
+  var send = document.getElementById('send');
+  var status = document.getElementById('status');
+  var EMAIL_OK = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+  function say(text, kind) {
+    status.textContent = text;
+    status.className = 'status' + (kind ? ' ' + kind : '');
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (trap.value) { say('Listo, quedaste anotado.', 'ok'); return; }
+    var value = email.value.trim().toLowerCase();
+    if (!EMAIL_OK.test(value)) { say('Revisá el email: parece que falta algo.', 'bad'); email.focus(); return; }
+    if (!consent.checked) { say('Tildá la casilla para que podamos usar tu email.', 'bad'); consent.focus(); return; }
+
+    send.disabled = true;
+    say('Enviando…');
+    fetch(SUPABASE_URL + '/rest/v1/tester_signups', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ email: value, consent: true })
+    }).then(function (res) {
+      if (res.ok) {
+        form.reset();
+        say('Anotado. Cuando la prueba esté abierta te escribo a ese email con el enlace.', 'ok');
+      } else if (res.status === 409) {
+        say('Ese email ya estaba anotado. No hace falta que hagas nada más.', 'ok');
+      } else {
+        say('No se pudo guardar tu email. Probá de nuevo en un rato o escribime a xuxinio@hotmail.com.', 'bad');
+      }
+    }).catch(function () {
+      say('No hay conexión con el servidor. Revisá tu internet y probá de nuevo.', 'bad');
+    }).then(function () {
+      send.disabled = false;
+    });
+  });
+})();
+</script>
+</body>
+</html>
