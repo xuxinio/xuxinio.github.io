@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1e0b36" />
+      <stop offset="100%" stop-color="#080811" />
+    </radialGradient>
+    <linearGradient id="tileRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF537A" />
+      <stop offset="100%" stop-color="#FF2A55" />
+    </linearGradient>
+    <linearGradient id="tileGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#24F5A2" />
+      <stop offset="100%" stop-color="#05D380" />
+    </linearGradient>
+    <linearGradient id="tileCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#70F8FF" />
+      <stop offset="100%" stop-color="#00F0FF" />
+    </linearGradient>
+    <linearGradient id="tileMagenta" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF66B2" />
+      <stop offset="100%" stop-color="#FF007F" />
+    </linearGradient>
+    <filter id="neon" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background rounded app icon frame -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGlow)" stroke="#FF007F" stroke-width="6" stroke-opacity="0.4" />
+
+  <!-- 3D perspective grid lines -->
+  <path d="M64 420 L448 420 M96 460 L416 460 M128 420 L80 500 M256 420 L256 500 M384 420 L432 500" stroke="#00F0FF" stroke-width="2" stroke-opacity="0.3" />
+
+  <!-- 4 Color Shift Tiles representing 2x2 blocks -->
+  <g filter="url(#neon)">
+    <!-- Top Left: Red -->
+    <rect x="110" y="110" width="130" height="130" rx="24" fill="url(#tileRed)" stroke="#FFFFFF" stroke-width="3" stroke-opacity="0.6" />
+    <path d="M175 145 L205 195 L145 195 Z" fill="#FFFFFF" fill-opacity="0.9" />
+
+    <!-- Top Right: Green -->
+    <rect x="272" y="110" width="130" height="130" rx="24" fill="url(#tileGreen)" stroke="#FFFFFF" stroke-width="3" stroke-opacity="0.6" />
+    <circle cx="337" cy="175" r="28" fill="#FFFFFF" fill-opacity="0.9" />
+
+    <!-- Bottom Left: Cyan -->
+    <rect x="110" y="272" width="130" height="130" rx="24" fill="url(#tileCyan)" stroke="#FFFFFF" stroke-width="3" stroke-opacity="0.6" />
+    <rect x="150" y="312" width="50" height="50" rx="8" fill="#FFFFFF" fill-opacity="0.9" />
+
+    <!-- Bottom Right: Magenta -->
+    <rect x="272" y="272" width="130" height="130" rx="24" fill="url(#tileMagenta)" stroke="#FFFFFF" stroke-width="3" stroke-opacity="0.6" />
+    <path d="M337 302 L350 327 L377 331 L357 350 L362 377 L337 364 L312 377 L317 350 L297 331 L324 327 Z" fill="#FFFFFF" fill-opacity="0.9" />
+  </g>
+
+  <!-- Central Wrap-around arrows emblem -->
+  <circle cx="256" cy="256" r="38" fill="#080811" stroke="#00F0FF" stroke-width="4" />
+  <path d="M236 248 L276 248 M266 238 L276 248 L266 258" stroke="#00F0FF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M276 264 L236 264 M246 254 L236 264 L246 274" stroke="#FF007F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
