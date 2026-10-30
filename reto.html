@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Desafío - Color Shift</title>
+<link rel="icon" href="assets/favicon.png" />
+<style>
+  body { margin: 0; background: radial-gradient(circle at 50% 0, #2a0f45, #080811 60%); color: #e2e8f0; font: 16px/1.6 system-ui, sans-serif; min-height: 100vh; }
+  main { max-width: 440px; margin: 0 auto; padding: 40px 16px; text-align: center; }
+  img { width: 96px; height: 96px; border-radius: 22px; }
+  h1 { color: #fff; margin: 16px 0 4px; font-size: 1.8rem; }
+  p { color: #cbd5e1; }
+  .btn { display: block; margin: 12px 0; padding: 14px; border-radius: 14px; font-weight: 700; text-decoration: none; }
+  .primary { background: linear-gradient(90deg, #c026d3, #06b6d4); color: #fff; }
+  .secondary { background: #1e1b3a; color: #67e8f9; border: 1px solid #155e75; }
+  .code { word-break: break-all; font: 13px monospace; background: #101020; padding: 10px; border-radius: 10px; color: #94a3b8; }
+  .meta { color: #64748b; font-size: .85rem; }
+</style>
+</head>
+<body>
+<main>
+  <img src="assets/xuxinio-games-icon-192.png" alt="Xuxinio Games" />
+  <h1>¡Te desafiaron!</h1>
+  <p>Un amigo te pasó un tablero de <strong>Color Shift</strong>. Jugá el mismo y compará tu tiempo.</p>
+
+  <a id="open" class="btn primary" href="#">Abrir el desafío en la app</a>
+  <div id="play"></div>
+
+  <p class="meta">Si la app no se abre, copiá este código y pegalo en el juego (botón “Tengo un código de desafío”):</p>
+  <div id="code" class="code"></div>
+  <p class="meta">Xuxinio Games · <a href="privacy.html" style="color:#67e8f9">Privacidad</a></p>
+</main>
+<script>
+  // Completar cuando el juego esté publicado: https://play.google.com/store/apps/details?id=com.xuxiniogames.colorshift
+  var PLAY_URL = '';
+  var code = new URLSearchParams(location.search).get('c') || '';
+  document.getElementById('code').textContent = code || '(sin código)';
+  var appLink = 'colorshift://reto?c=' + encodeURIComponent(code);
+  var isAndroid = /android/i.test(navigator.userAgent);
+  var openLink = isAndroid
+    ? 'intent://reto?c=' + encodeURIComponent(code) + '#Intent;scheme=colorshift;package=com.xuxiniogames.colorshift;' +
+      (PLAY_URL ? 'S.browser_fallback_url=' + encodeURIComponent(PLAY_URL) + ';' : '') + 'end'
+    : appLink;
+  document.getElementById('open').href = openLink;
+  document.getElementById('play').innerHTML = PLAY_URL
+    ? '<a class="btn secondary" href="' + PLAY_URL + '">Descargar en Google Play</a>'
+    : '<p class="meta">El juego estará disponible pronto en Google Play.</p>';
+  if (isAndroid && code) setTimeout(function () { location.href = openLink; }, 400);
+</script>
+</body>
+</html>
