@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Probá Color Shift · Xuxinio Games</title>
-<meta name="description" content="Sumate como tester de Color Shift, el puzzle de deslizar filas y columnas para Android, antes de que salga en Google Play." />
+<meta name="description" content="Inscripción cerrada: gracias a todos los voluntarios que se anotaron para probar Color Shift. En breve les llegan las invitaciones." />
 <meta name="theme-color" content="#080a06" />
 <link rel="icon" type="image/png" href="assets/favicon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -130,9 +130,9 @@
 
   <main class="layout">
     <div class="intro">
-      <h1>Probá Color Shift antes de que salga</h1>
+      <h1>Gracias por ayudarme a probar Color Shift</h1>
       <p class="lead">Es un puzzle para Android: deslizás filas y columnas hasta juntar los colores en bloques. Suena cada nota que tocás.</p>
-      <p class="note">Estoy armando un grupo de testers para probarlo en Google Play antes de publicarlo. Si jugás un rato y me contás qué te pareció, ya ayudás un montón. Antes de anotarte, mirá las <a href="testers-condiciones.html">condiciones para testers</a>.</p>
+      <p class="note">La inscripción para el grupo de testers ya está cerrada. Gracias a todos los que se anotaron: ya tengo los voluntarios que necesitaba.</p>
     </div>
 
     <aside class="stage" aria-label="Capturas de Color Shift">
@@ -142,33 +142,14 @@
 
     <div class="rest">
       <section class="join" aria-labelledby="join-title">
-        <h2 id="join-title">Anotate como tester</h2>
-        <form id="form" novalidate>
-          <label class="field" for="email">Email de tu cuenta de Google</label>
-          <input id="email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="vos@gmail.com" required />
-          <p class="hint">Tiene que ser el email con el que entrás a Google Play en tu celular.</p>
-
-          <label class="field" for="name">Nombre o alias para los agradecimientos <span class="opt">(opcional)</span></label>
-          <input id="name" class="txt" name="name" type="text" maxlength="40" autocomplete="nickname" placeholder="Cómo querés aparecer" />
-          <p class="hint">Si lo completás, te nombro en los agradecimientos cuando el juego salga. Si lo dejás vacío, no aparecés.</p>
-
-          <div class="trap" aria-hidden="true">
-            <label>No completar <input type="text" id="web" name="web" tabindex="-1" autocomplete="off" /></label>
-          </div>
-
-          <label class="consent" for="consent">
-            <input id="consent" name="consent" type="checkbox" required />
-            <span>Acepto que usen mi email solo para invitarme a probar Color Shift y, si lo completé, mi nombre en los agradecimientos. Lo borro cuando quiera, según la <a href="privacy.html">política de privacidad</a>.</span>
-          </label>
-
-          <button class="send" id="send" type="submit">Quiero probar Color Shift</button>
-          <p class="status" id="status" role="status" aria-live="polite"></p>
-        </form>
+        <h2 id="join-title">Inscripción cerrada</h2>
+        <p style="margin:0 0 12px">En breve les van a llegar las invitaciones a todos los voluntarios, al email que dejaron al anotarse.</p>
+        <p style="margin:0"><strong>¡Muchísimas gracias!</strong> Tu ayuda hace que Color Shift salga mejor.</p>
       </section>
 
       <ol class="steps" aria-label="Cómo funciona">
-        <li><div class="n" aria-hidden="true">1</div><div><strong>Dejás tu email</strong><span>Acá arriba, con tu cuenta de Google.</span></div></li>
-        <li><div class="n" aria-hidden="true">2</div><div><strong>Te escribo con el enlace</strong><span>Cuando la prueba esté abierta, te llega la invitación de Google Play.</span></div></li>
+        <li><div class="n" aria-hidden="true">1</div><div><strong>Dejaste tu email</strong><span>Con tu cuenta de Google.</span></div></li>
+        <li><div class="n" aria-hidden="true">2</div><div><strong>Te llega la invitación</strong><span>En breve te escribo a ese email con el enlace de Google Play.</span></div></li>
         <li><div class="n" aria-hidden="true">3</div><div><strong>Instalás y jugás</strong><span>Algunos días, unos minutos por vez. No te salgas de la prueba hasta que termine.</span></div></li>
       </ol>
     </div>
@@ -182,61 +163,6 @@
   </footer>
 </div>
 
-<script>
-(function () {
-  var SUPABASE_URL = 'https://dnwovxsokigxqtodkjxe.supabase.co';
-  var SUPABASE_KEY = 'sb_publishable_2dR0k_j0zTh7mPqYUvQFPA_lQfnEpIK';
-  var form = document.getElementById('form');
-  var email = document.getElementById('email');
-  var nameInput = document.getElementById('name');
-  var consent = document.getElementById('consent');
-  var trap = document.getElementById('web');
-  var send = document.getElementById('send');
-  var status = document.getElementById('status');
-  var EMAIL_OK = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-  function say(text, kind) {
-    status.textContent = text;
-    status.className = 'status' + (kind ? ' ' + kind : '');
-  }
-
-  form.addEventListener('submit', function (event) {
-    event.preventDefault();
-    if (trap.value) { say('Listo, quedaste anotado.', 'ok'); return; }
-    var value = email.value.trim().toLowerCase();
-    if (!EMAIL_OK.test(value)) { say('Revisá el email: parece que falta algo.', 'bad'); email.focus(); return; }
-    if (!consent.checked) { say('Tildá la casilla para que podamos usar tu email.', 'bad'); consent.focus(); return; }
-
-    var payload = { email: value, consent: true };
-    var shown = nameInput.value.trim();
-    if (shown) payload.display_name = shown.slice(0, 40);
-
-    send.disabled = true;
-    say('Enviando…');
-    fetch(SUPABASE_URL + '/rest/v1/tester_signups', {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify(payload)
-    }).then(function (res) {
-      if (res.ok) {
-        form.reset();
-        say('Anotado. Cuando la prueba esté abierta te escribo a ese email con el enlace.', 'ok');
-      } else if (res.status === 409) {
-        say('Ese email ya estaba anotado. No hace falta que hagas nada más.', 'ok');
-      } else {
-        say('No se pudo guardar tu email. Probá de nuevo en un rato o escribime a xuxinio@hotmail.com.', 'bad');
-      }
-    }).catch(function () {
-      say('No hay conexión con el servidor. Revisá tu internet y probá de nuevo.', 'bad');
-    }).then(function () {
-      send.disabled = false;
-    });
-  });
-})();
-</script>
 </body>
 </html>
