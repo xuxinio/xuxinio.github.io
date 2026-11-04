@@ -79,12 +79,15 @@
   .join { margin-top: 0; padding: 22px 18px 20px; background: var(--panel); border: 1px solid var(--line); border-left: 6px solid var(--lime); border-radius: 6px; }
   .join h2 { font-family: "Saira Stencil One", Impact, sans-serif; font-weight: 400; font-size: 1.5rem; margin: 0 0 14px; }
   label.field { display: block; font-weight: 600; margin-bottom: 6px; }
-  input[type="email"], input.txt {
+  input[type="email"], input.txt, select.txt {
     width: 100%; padding: 14px 14px; font: inherit; font-size: 1rem;
     color: var(--bone); background: var(--ink);
     border: 2px solid var(--line); border-radius: 6px;
   }
-  input[type="email"]:focus, input.txt:focus { border-color: var(--lime); outline: none; box-shadow: 0 0 0 3px rgba(184, 238, 11, 0.25); }
+  select.txt { appearance: auto; }
+  .aviso { margin: 6px 0 16px; padding: 12px 14px; border: 1px solid #f6b81e; border-radius: 6px; color: #f6d27a; font-size: 0.95rem; }
+  .aviso[hidden] { display: none; }
+  input[type="email"]:focus, input.txt:focus, select.txt:focus { border-color: var(--lime); outline: none; box-shadow: 0 0 0 3px rgba(184, 238, 11, 0.25); }
   .opt { color: var(--mute); font-weight: 400; }
   .hint { color: var(--mute); font-size: 0.95rem; margin: 6px 0 16px; }
   .consent { display: flex; gap: 12px; align-items: flex-start; margin: 0 0 18px; font-size: 0.97rem; }
@@ -157,6 +160,13 @@
           <input id="name" class="txt" name="name" type="text" maxlength="40" autocomplete="nickname" placeholder="Cómo querés aparecer" />
           <p class="hint">Si lo completás, te nombro en los agradecimientos cuando el juego salga. Si lo dejás vacío, no aparecés.</p>
 
+          <label class="field" for="country">País donde vivís</label>
+          <select id="country" class="txt" name="country" required>
+            <option value="">Elegí tu país</option>
+          </select>
+          <p class="aviso" id="aviso-pais" hidden>Por las regulaciones de esa región, la prueba todavía no se puede abrir en la Unión Europea ni en Estados Unidos. Va a estar disponible cuando Google Play dé por aprobadas las pruebas requeridas. Podés anotarte igual y te aviso a tu email apenas se habilite.</p>
+          <p class="hint" id="hint-pais">Por regulaciones, en la Unión Europea y Estados Unidos la prueba se habilita más adelante.</p>
+
           <div class="trap" aria-hidden="true">
             <label>No completar <input type="text" id="web" name="web" tabindex="-1" autocomplete="off" /></label>
           </div>
@@ -211,6 +221,36 @@
   var send = document.getElementById('send');
   var status = document.getElementById('status');
   var EMAIL_OK = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  var country = document.getElementById('country');
+  var avisoPais = document.getElementById('aviso-pais');
+  // Unión Europea (27) y Estados Unidos: la prueba se abre ahí cuando Google Play apruebe las pruebas requeridas
+  var EN_ESPERA = ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','US'];
+  var CODIGOS = ('AR BO BR CL CO CR CU DO EC SV GT HN MX NI PA PY PE PR UY VE ' +
+    'AD AE AF AG AI AL AM AO AQ AS AT AU AW AZ BA BB BD BE BF BG BH BI BJ BM BN BS BT BW BY BZ CA CD CF CG CH CI CK CM CN CV CW CY CZ ' +
+    'DE DJ DK DM DZ EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GH GI GL GM GN GP GQ GR GU GW GY HK HR HT HU ID IE IL IN IQ IR IS IT ' +
+    'JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MG MH MK ML MM MN MO MQ MR MS MT MU MV MW MY MZ ' +
+    'NA NC NE NG NL NO NP NR NU NZ OM PF PG PH PK PL PS PT PW QA RE RO RS RU RW SA SB SC SD SE SG SI SK SL SM SN SO SR SS ST SY SZ ' +
+    'TC TD TG TH TJ TL TM TN TO TR TT TV TW TZ UA UG US UZ VA VC VG VI VN VU WS XK YE YT ZA ZM ZW').split(' ');
+  var nombres = null;
+  try { nombres = new Intl.DisplayNames(['es'], { type: 'region' }); } catch (e) {}
+  var latam = CODIGOS.slice(0, 20);
+  function opcion(c) {
+    var o = document.createElement('option');
+    o.value = c;
+    o.textContent = nombres ? nombres.of(c) : c;
+    return o;
+  }
+  function porNombre(a, b) { return (nombres ? nombres.of(a) : a).localeCompare(nombres ? nombres.of(b) : b, 'es'); }
+  var g1 = document.createElement('optgroup'); g1.label = 'América Latina';
+  latam.slice().sort(porNombre).forEach(function (c) { g1.appendChild(opcion(c)); });
+  var g2 = document.createElement('optgroup'); g2.label = 'Resto del mundo';
+  CODIGOS.slice(20).filter(function (c) { return latam.indexOf(c) < 0; }).sort(porNombre).forEach(function (c) { g2.appendChild(opcion(c)); });
+  country.appendChild(g1);
+  country.appendChild(g2);
+  country.addEventListener('change', function () {
+    avisoPais.hidden = EN_ESPERA.indexOf(country.value) < 0;
+    document.getElementById('hint-pais').hidden = !avisoPais.hidden;
+  });
 
   function say(text, kind) {
     status.textContent = text;
@@ -222,9 +262,11 @@
     if (trap.value) { say('Listo, quedaste anotado.', 'ok'); return; }
     var value = email.value.trim().toLowerCase();
     if (!EMAIL_OK.test(value)) { say('Revisá el email: parece que falta algo.', 'bad'); email.focus(); return; }
+    if (!country.value) { say('Elegí el país donde vivís.', 'bad'); country.focus(); return; }
     if (!consent.checked) { say('Tildá la casilla para que podamos usar tu email.', 'bad'); consent.focus(); return; }
 
-    var payload = { email: value, consent: true };
+    var enEspera = EN_ESPERA.indexOf(country.value) >= 0;
+    var payload = { email: value, consent: true, country: country.value };
     var shown = nameInput.value.trim();
     if (shown) payload.display_name = shown.slice(0, 40);
 
@@ -241,7 +283,10 @@
     }).then(function (res) {
       if (res.ok) {
         form.reset();
-        say('Anotado. Cuando la prueba esté abierta te escribo a ese email con el enlace.', 'ok');
+        avisoPais.hidden = true;
+        say(enEspera
+          ? 'Anotado. En tu país la prueba se habilita cuando Google Play la apruebe: ahí te escribo a ese email con el enlace.'
+          : 'Anotado. Cuando la prueba esté abierta te escribo a ese email con el enlace.', 'ok');
       } else if (res.status === 409) {
         say('Ese email ya estaba anotado. No hace falta que hagas nada más.', 'ok');
       } else {
